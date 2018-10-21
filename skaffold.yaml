@@ -1,0 +1,31 @@
+apiVersion: skaffold/v1alpha2
+kind: Config
+build:
+  tagPolicy:
+    envTemplate:
+      template: "{{.DOCKER_REGISTRY}}/manitan/spring-boot-http4:{{.VERSION}}"
+  artifacts:
+  - imageName: changeme
+    workspace: .
+    docker: {}
+  local: {}
+deploy:
+  kubectl:
+    manifests:
+profiles:
+- name: dev
+  build:
+    tagPolicy:
+      envTemplate:
+        template: "{{.DOCKER_REGISTRY}}/manitan/spring-boot-http4:{{.DIGEST_HEX}}"
+    artifacts:
+    - docker: {}
+    local: {}
+  deploy:
+    helm:
+      releases:
+      - name: spring-boot-http4
+        chartPath: charts/spring-boot-http4
+        setValueTemplates:
+          image.repository: "{{.DOCKER_REGISTRY}}/manitan/spring-boot-http4"
+          image.tag: "{{.DIGEST_HEX}}"
