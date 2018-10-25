@@ -20,7 +20,7 @@ public class Greeting {
         return content;
     }
 
-    public Date getDate() {
+    public Date getDate() { // Added
         return date;
     }
 }
